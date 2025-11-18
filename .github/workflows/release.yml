@@ -17,10 +17,12 @@ jobs:
       - uses: KamaranL/Ahk2Exe-action@v1
         with:
           in: src/AHhotkey.ahk
+          out: ''
           arch: x64
       - uses: KamaranL/Ahk2Exe-action@v1
         with:
           in: src/AHmacro.ahk
+          out: ''
           arch: x64
 
       - run: Write-Output "$env:AHK_BUILD_64"
