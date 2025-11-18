@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile Ahk to exe
+        uses: tamo/action-Ahk2Exe@main
+        with:
+          src: AHhotkey.ahk,AHmacro.ahk
+          base: AutoHotkey64.exe
+
+      - name: Archive
+        uses: thedoctor0/zip-release@0.7.6
+        with:
+          type: 'zip'
+          filename: hotkey.zip
+          exclusions: '*_ahktmp* *.ahk *.git* *.github* .gitignore .artifacts readme.md'
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotkey.zip
+          path: hotkey.zip
+          overwrite: 'true'
+
+  release:
+    name: release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: hotkey.zip
+          path: zips
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: zips/hotkey.zip
+          tag_name: ${{ github.ref_name }}
+          body: "Automated release of ${{ github.ref_name }}."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
