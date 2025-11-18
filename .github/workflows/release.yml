@@ -14,17 +14,13 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: KamaranL/Ahk2Exe-action@v1
         with:
-          in: src/hotkey.ahk
-          out: dist/x64/AHhotkey.exe
+          in: src/AHhotkey.ahk
           arch: x64
-
       - uses: KamaranL/Ahk2Exe-action@v1
         with:
-          in: src/macro.ahk
-          out: dist/x64/AHmacro.exe
+          in: src/AHmacro.ahk
           arch: x64
 
       - run: Write-Output "$env:AHK_BUILD_64"
