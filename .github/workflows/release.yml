@@ -16,13 +16,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: KamaranL/Ahk2Exe-action@v1
         with:
-          in: src/AHhotkey.ahk
-          out: ''
+          in: AHhotkey.ahk
+          out: AHhotkey.exe
           arch: x64
       - uses: KamaranL/Ahk2Exe-action@v1
         with:
-          in: src/AHmacro.ahk
-          out: ''
+          in: AHmacro.ahk
+          out: AHmacro.exe
           arch: x64
 
       - run: Write-Output "$env:AHK_BUILD_64"
