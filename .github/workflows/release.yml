@@ -14,21 +14,12 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: KamaranL/Ahk2Exe-action@v1
-        with:
-          in: AHhotkey.ahk
-          out: AHhotkey.exe
-          arch: x64
-      - uses: KamaranL/Ahk2Exe-action@v1
-        with:
-          in: AHmacro.ahk
-          out: AHmacro.exe
-          arch: x64
 
-      - run: Write-Output "$env:AHK_BUILD_64"
-        shell: pwsh
-        env:
-          AHK_BUILD_X64: ${{ steps.build-x64.outputs.main_ahk-x64 }}
+      - name: Compile Ahk to exe
+        uses: tamo/action-Ahk2Exe@main
+        with:
+          src: AHhotkey.ahk,AHmacro.ahk
+          base: AutoHotkey64.exe
 
       - name: Archive
         uses: thedoctor0/zip-release@0.7.6
