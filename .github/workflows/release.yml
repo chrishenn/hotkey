@@ -18,13 +18,13 @@ jobs:
       - uses: KamaranL/Ahk2Exe-action@v1
         with:
           in: src/hotkey.ahk
-          out: src/AHhotkey.exe
+          out: dist/x64/AHhotkey.exe
           arch: x64
 
       - uses: KamaranL/Ahk2Exe-action@v1
         with:
           in: src/macro.ahk
-          out: src/AHmacro.exe
+          out: dist/x64/AHmacro.exe
           arch: x64
 
       - run: Write-Output "$env:AHK_BUILD_64"
