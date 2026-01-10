@@ -1,0 +1,125 @@
+name: Compile AutoHotkey Script
+author: CEnnis91
+description: Compiles AutoHotkey scripts into EXEs using Ahk2Exe
+
+branding:
+  icon: 'package'
+  color: 'blue'
+
+inputs:
+  in:
+    description: The path and name of the script to compile.
+    required: true
+  out:
+    description: The path\name of the output .exe to be created. Default is the directory\base_name of the input file plus extension of .exe.
+    required: false
+    default: ''
+  icon:
+    description: The icon file to be used.
+    required: false
+    default: ''
+  cp:
+    description: Overrides the default codepage used to read script files.
+    required: false
+    default: ''
+  base:
+    description: The base file to be used (a .bin or .exe file).
+    required: false
+    default: 'Unicode 64-bit.bin'
+  compress:
+    description: Compress the exe? 0 = no, 1 = use MPRESS if present, 2 = use UPX if present.
+    required: false
+    default: ''
+  resourceid:
+    description: Assigns a non-standard resource ID to be used for the main script for compilations which use an .exe base file.
+    required: false
+    default: ''
+
+outputs:
+  binary:
+    description: The compiled AutoHotkey binary
+    value: ${{ steps.compile.outputs.binary }}
+  directory:
+    description: The base directory of the installed AutoHotkey
+    value: ${{ steps.install.outputs.directory }}
+  version:
+    description: The version of the installed AutoHotkey
+    value: ${{ steps.install.outputs.version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Check Operating System
+      shell: bash
+      run: |
+        if [[ "$RUNNER_OS" != 'Windows' ]]; then
+          echo "::error ::${RUNNER_OS} is not supported, you must use Windows."
+          exit 1
+        fi
+
+    - name: Install Scoop with Extras
+      shell: pwsh
+      run: |
+        iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+        scoop bucket add extras
+        scoop bucket add versions
+        scoop install zip
+        Write-Output ('Path=' + $env:Path + ';' + $env:UserProfile + '\scoop\shims') >> $env:GITHUB_ENV
+
+    - name: Install AutoHotkey
+      id: install
+      shell: pwsh
+      run: |
+        scoop install autohotkey
+        $ahk = (scoop which autohotkey)
+        $directory = (Resolve-Path (Split-Path -Path $ahk)).Path
+        $version = (scoop info autohotkey).Version
+
+        echo "::set-output name=directory::$directory"
+        echo "::set-output name=version::$version"
+        echo "::notice ::Successfully installed AutoHotkey ${version} from Scoop."
+
+    - name: Compile Script
+      id: compile
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = 'Stop'
+
+        $args = @()
+        $with = @{
+          'in' = "${{ inputs.in }}"; 'out' = "${{ inputs.out }}"; 'icon' = "${{ inputs.icon }}";
+          'cp' = "${{ inputs.cp }}"; 'base' = "${{ inputs.base }}"; 'compress' = "${{ inputs.compress }}";
+          'resourceid' = "${{ inputs.resourceid }}";
+        }
+
+        ForEach ($key in @($with.Keys)) {
+          If (![string]::IsNullOrEmpty($with["$key"])) {
+            $is_path = $true
+
+            Switch ($key) {
+              { @('in', 'icon') -contains $_} {
+                $with["$key"] = Resolve-Path -Path $with["$key"]
+              }
+              { @('base') -contains $_ } {
+                $with["$key"] = Resolve-Path -Path "${{ steps.install.outputs.directory }}\Compiler\$($with["$key"])"
+              }
+              { @('out') -contains $_ } {
+                $with["$key"] = Join-Path $pwd $with["$key"]
+                New-Item $(Split-Path -Path $with["$key"]) -Force -ItemType Directory > $null
+              }
+              default { $is_path = $false }
+            }
+
+            If ($is_path) {
+              $args += "/$key '$($with["$key"])'"
+            } Else {
+              $args += "/$key $($with["$key"])"
+            }
+          }
+        }
+
+        Invoke-Expression "ahk2exe.exe $($args -join ' ')" | Out-String -OutVariable output
+
+        $binary = $output.Split([Environment]::NewLine).Where({ $_.contains('exe') })
+        echo "::set-output name=binary::$binary"
+        echo "::notice ::Successfully compiled as: ${binary}."

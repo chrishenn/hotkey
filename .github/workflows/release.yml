@@ -31,11 +31,11 @@ jobs:
 #          in: AHmacro.ahk
 
       - name: Compile with Ahk2Exe
-        uses: cennis91/action-ahk2exe@main
+        uses: ./.github/actions/ahk2exe
         with:
           in: AHhotkey.ahk
       - name: Compile with Ahk2Exe
-        uses: cennis91/action-ahk2exe@main
+        uses: ./.github/actions/ahk2exe
         with:
           in: AHmacro.ahk
 
