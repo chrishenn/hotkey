@@ -15,11 +15,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile Ahk to exe
-        uses: tamo/action-Ahk2Exe@main
+#      - name: Compile Ahk to exe
+#        uses: tamo/action-Ahk2Exe@main
+#        with:
+#          src: AHhotkey.ahk,AHmacro.ahk
+#          base: AutoHotkey64.exe
+
+      - name: Ahk2Exe
+        uses: CCCC-L/Action-Ahk2Exe@main
         with:
-          src: AHhotkey.ahk,AHmacro.ahk
-          base: AutoHotkey64.exe
+          in: AHhotkey.ahk
+
+      - name: Ahk2Exe
+        uses: CCCC-L/Action-Ahk2Exe@main
+        with:
+          in: AHmacro.ahk
 
       - name: Archive
         uses: thedoctor0/zip-release@0.7.6
@@ -27,6 +37,7 @@ jobs:
           type: 'zip'
           filename: hotkey.zip
           exclusions: '*_ahktmp* *.ahk *.git* *.github* .gitignore .artifacts readme.md'
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
