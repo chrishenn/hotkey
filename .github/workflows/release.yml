@@ -21,13 +21,23 @@ jobs:
 #          src: AHhotkey.ahk,AHmacro.ahk
 #          base: AutoHotkey64.exe
 
-      - name: Ahk2Exe
-        uses: CCCC-L/Action-Ahk2Exe@main
+#      - name: Ahk2Exe
+#        uses: CCCC-L/Action-Ahk2Exe@main
+#        with:
+#          in: AHhotkey.ahk
+#      - name: Ahk2Exe
+#        uses: CCCC-L/Action-Ahk2Exe@main
+#        with:
+#          in: AHmacro.ahk
+
+      - name: Compile with Ahk2Exe
+        uses: cennis91/action-ahk2exe@main
+        id: ahk2exe
         with:
           in: AHhotkey.ahk
-
-      - name: Ahk2Exe
-        uses: CCCC-L/Action-Ahk2Exe@main
+      - name: Compile with Ahk2Exe
+        uses: cennis91/action-ahk2exe@main
+        id: ahk2exe
         with:
           in: AHmacro.ahk
 
