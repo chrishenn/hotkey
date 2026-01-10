@@ -74,6 +74,17 @@ runs:
         $ahk = (scoop which autohotkey)
         $directory = (Resolve-Path (Split-Path -Path $ahk)).Path
         $version = (scoop info autohotkey).Version
+        
+        $ahdir = "$(scoop prefix autohotkey)"
+        $ahk2exe = "$ahdir\Compiler\Ahk2Exe.exe"
+        $base = "$ahdir\v2\autohotkey64.exe"
+        $installer = "$ahdir\UX\install-ahk2exe.ahk"
+        
+        start-process $base -a "/script $installer /silent /base $base" -Wait
+        if (! (test-path $ahk2exe)) {
+          write-host -f r "ERROR: ahk2exe.exe compiler was not found at: $ahk2exe"
+          exit 1
+        }
 
         echo "::set-output name=directory::$directory"
         echo "::set-output name=version::$version"
@@ -84,11 +95,15 @@ runs:
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
+        
+        $ahdir = "$(scoop prefix autohotkey)"
+        $base = "$ahdir\v2\autohotkey64.exe"
+        $ahk2exe = "$ahdir\Compiler\Ahk2Exe.exe"
 
         $args = @()
         $with = @{
           'in' = "${{ inputs.in }}"; 'out' = "${{ inputs.out }}"; 'icon' = "${{ inputs.icon }}";
-          'cp' = "${{ inputs.cp }}"; 'base' = "${{ inputs.base }}"; 'compress' = "${{ inputs.compress }}";
+          'cp' = "${{ inputs.cp }}"; 'base' = "$base"; 'compress' = "${{ inputs.compress }}";
           'resourceid' = "${{ inputs.resourceid }}";
         }
 
@@ -118,7 +133,7 @@ runs:
           }
         }
 
-        Invoke-Expression "ahk2exe.exe $($args -join ' ')" | Out-String -OutVariable output
+        Invoke-Expression "$ahk2exe $($args -join ' ')" | Out-String -OutVariable output
 
         $binary = $output.Split([Environment]::NewLine).Where({ $_.contains('exe') })
         echo "::set-output name=binary::$binary"
