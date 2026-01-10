@@ -112,11 +112,8 @@ runs:
             $is_path = $true
 
             Switch ($key) {
-              { @('in', 'icon') -contains $_} {
+              { @('in', 'icon', 'base') -contains $_} {
                 $with["$key"] = Resolve-Path -Path $with["$key"]
-              }
-              { @('base') -contains $_ } {
-                $with["$key"] = Resolve-Path -Path "${{ steps.install.outputs.directory }}\Compiler\$($with["$key"])"
               }
               { @('out') -contains $_ } {
                 $with["$key"] = Join-Path $pwd $with["$key"]
