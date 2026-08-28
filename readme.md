@@ -1,6 +1,18 @@
 # Hotkey
 
-My minimal windows hotkeys
+My windows hotkeys
+
+# Dev
+
+```pwsh
+# manually bump the version file. then:
+$ver = get-content $pwd\version
+git add -A
+git commit -am "release: $ver"
+git push
+git tag -a "v$ver" -m "v$ver" 
+git push --tags
+```
 
 
 ## Notes
