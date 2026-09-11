@@ -33,7 +33,7 @@ jobs:
         with:
           name: hotkey.zip
           path: hotkey.zip
-          overwrite: 'true'
+          overwrite: true
 
   release:
     name: release
