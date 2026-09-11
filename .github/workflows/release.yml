@@ -13,23 +13,7 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-
-#      - name: Compile Ahk to exe
-#        uses: tamo/action-Ahk2Exe@main
-#        with:
-#          src: AHhotkey.ahk,AHmacro.ahk
-#          base: AutoHotkey64.exe
-
-#      - name: Ahk2Exe
-#        uses: CCCC-L/Action-Ahk2Exe@main
-#        with:
-#          in: AHhotkey.ahk
-#      - name: Ahk2Exe
-#        uses: CCCC-L/Action-Ahk2Exe@main
-#        with:
-#          in: AHmacro.ahk
-
+      - uses: actions/checkout@v6
       - name: Compile with Ahk2Exe
         uses: ./.github/actions/ahk2exe
         with:
@@ -38,20 +22,18 @@ jobs:
         uses: ./.github/actions/ahk2exe
         with:
           in: AHmacro.ahk
-
       - name: Archive
         uses: thedoctor0/zip-release@0.7.6
         with:
-          type: 'zip'
+          type: zip
           filename: hotkey.zip
-          exclusions: '*_ahktmp* *.ahk *.git* *.github* .gitignore .artifacts readme.md'
-
+          exclusions: '*_ahktmp* *.ahk *.git* *.github* .gitignore .artifacts readme.md mise.toml justfile'
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: hotkey.zip
           path: hotkey.zip
-          overwrite: 'true'
+          overwrite: true
 
   release:
     name: release
@@ -59,14 +41,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: hotkey.zip
-          path: zips
+          path: pkg
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
-          files: zips/hotkey.zip
+          files: pkg/hotkey.zip
           tag_name: ${{ github.ref_name }}
           body: "Automated release of ${{ github.ref_name }}."
         env:
