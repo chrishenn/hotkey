@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
 #      - name: Compile Ahk to exe
 #        uses: tamo/action-Ahk2Exe@main
@@ -34,24 +34,19 @@ jobs:
         uses: ./.github/actions/ahk2exe
         with:
           in: AHhotkey.ahk
+          out: pkg\AHhotkey.exe
       - name: Compile with Ahk2Exe
         uses: ./.github/actions/ahk2exe
         with:
           in: AHmacro.ahk
+          out: pkg\AHmacro.exe
 
       - name: Archive
         uses: thedoctor0/zip-release@0.7.6
         with:
           type: 'zip'
           filename: hotkey.zip
-          exclusions: '*_ahktmp* *.ahk *.git* *.github* .gitignore .artifacts readme.md'
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: hotkey.zip
-          path: hotkey.zip
-          overwrite: 'true'
+          exclusions: '*_ahktmp* *.ahk *.git* *.github* .gitignore .artifacts readme.md mise.toml justfile'
 
   release:
     name: release

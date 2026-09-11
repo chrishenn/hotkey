@@ -1,6 +1,5 @@
 param (
     [switch] $install,
-    [switch] $pre_uninstall,
     [switch] $uninstall
 )
 
@@ -27,7 +26,7 @@ function install {
     rprop $key 'StartupDelayInMSec' 'DWORD' 1
 }
 
-function pre_uninstall {
+function uninstall {
     foreach ($exe in (get-childitem $dir -filter *.exe)) {
         if (get-process -name $exe.basename -ea 0) {
             stop-process -name $exe.basename -ea 0
@@ -35,9 +34,7 @@ function pre_uninstall {
             start-sleep 0.5
         }
     }
-}
 
-function uninstall {
     $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
     foreach ($exe in (get-childitem $dir -filter *.exe)) {
         rp $key $exe.basename
@@ -47,8 +44,6 @@ function uninstall {
 function main {
     if ($install) {
         install
-    } elseif ($pre_uninstall) {
-        pre_uninstall
     } elseif ($uninstall) {
         uninstall
     }
