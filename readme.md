@@ -6,6 +6,9 @@ My windows hotkeys
 
 ```pwsh
 # manually bump the version file. then:
+just release
+
+# or;
 $ver = get-content $pwd\version
 git add -A
 git commit -am "release: $ver"

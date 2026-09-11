@@ -14,33 +14,16 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
-
-#      - name: Compile Ahk to exe
-#        uses: tamo/action-Ahk2Exe@main
-#        with:
-#          src: AHhotkey.ahk,AHmacro.ahk
-#          base: AutoHotkey64.exe
-
-#      - name: Ahk2Exe
-#        uses: CCCC-L/Action-Ahk2Exe@main
-#        with:
-#          in: AHhotkey.ahk
-#      - name: Ahk2Exe
-#        uses: CCCC-L/Action-Ahk2Exe@main
-#        with:
-#          in: AHmacro.ahk
-
       - name: Compile with Ahk2Exe
         uses: ./.github/actions/ahk2exe
         with:
           in: AHhotkey.ahk
-          out: pkg\AHhotkey.exe
+          out: AHhotkey.exe
       - name: Compile with Ahk2Exe
         uses: ./.github/actions/ahk2exe
         with:
           in: AHmacro.ahk
-          out: pkg\AHmacro.exe
-
+          out: AHmacro.exe
       - name: Archive
         uses: thedoctor0/zip-release@0.7.6
         with:
