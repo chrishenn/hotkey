@@ -22,20 +22,18 @@ jobs:
         uses: ./.github/actions/ahk2exe
         with:
           in: AHmacro.ahk
+      - name: Archive
+        uses: thedoctor0/zip-release@0.7.6
+        with:
+          type: zip
+          filename: hotkey.zip
+          exclusions: '*_ahktmp* *.ahk *.git* *.github* .gitignore .artifacts readme.md mise.toml justfile'
       - name: Upload Artifact
         uses: actions/upload-artifact@v7
         with:
           name: hotkey.zip
-          path: '**/*.exe'
-          overwrite: true
-          archive: true
-          if-no-files-found: error
-#      - name: Archive
-#        uses: thedoctor0/zip-release@0.7.6
-#        with:
-#          type: 'zip'
-#          filename: hotkey.zip
-#          exclusions: '*_ahktmp* *.ahk *.git* *.github* .gitignore .artifacts readme.md mise.toml justfile'
+          path: hotkey.zip
+          overwrite: 'true'
 
   release:
     name: release
@@ -48,7 +46,7 @@ jobs:
           name: hotkey.zip
           path: pkg
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: pkg/hotkey.zip
           tag_name: ${{ github.ref_name }}
