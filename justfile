@@ -1,5 +1,6 @@
 alias r := release
 
+[windows]
 release:
     #! pwsh
 

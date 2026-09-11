@@ -26,9 +26,10 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: hotkey.zip
-          path: '{*.exe,version,install.ps1}'
+          path: './{*.exe,version,install.ps1}'
           overwrite: true
           archive: true
+          if-no-files-found: error
 #      - name: Archive
 #        uses: thedoctor0/zip-release@0.7.6
 #        with:
