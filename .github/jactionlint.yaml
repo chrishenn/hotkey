@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jdx/jactionlint/main/schema/jactionlint-config.json
+
+# "correctness" is what actionlint checks plus the bug detectors of jactionlint.
+# "default" adds the security posture and policy rules worth failing a build on.
+# "pedantic" adds the noisy and opinionated rules.
+profile: pedantic
+
+online: true
+
+rules:
+
+self-hosted-runner:
+  labels: []
+
+config-variables: null
+
+config-secrets: null
+
+paths:
+
+generated-files: skip-policy

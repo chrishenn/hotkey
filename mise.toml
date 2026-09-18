@@ -1,3 +1,35 @@
 [tools]
 just = "latest"
 powershell = "latest"
+actionlint = "latest"
+hk = "latest"
+pkl = "latest"
+pinact = "latest"
+zizmor = "latest"
+jactionlint = "latest"
+act = "latest"
+
+[tasks.fix]
+alias = "f"
+run = "hk fix --all"
+
+[tasks.check]
+alias = "c"
+run = "hk check --all"
+
+[tasks.release]
+description = "force-tag and push a version release"
+alias = "rel"
+run = '''
+ver="$(cat ./version)"
+git add -A
+git commit -am "Automated release of: v$ver" || true
+git push
+git tag -a "v$ver" -m "Automated release of: v$ver" -f
+git push --tags -f
+'''
+
+[tasks.sync]
+alias = 's'
+usage = 'arg "<msg>" default="sync"'
+run = 'git add -A && git commit -am "{{usage.msg}}" && git pull && git push'
