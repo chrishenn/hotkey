@@ -4,6 +4,8 @@ powershell = "latest"
 actionlint = "latest"
 hk = "latest"
 pkl = "latest"
+pinact = "latest"
+zizmor = "latest"
 
 [tasks.fix]
 alias = "f"

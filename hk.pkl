@@ -11,7 +11,7 @@ steps {
   ["pinact_update"] = Builtins.pinact_update
   ["pinact"] = Builtins.pinact
   // todo: actionlint doesn't like path reference to local ahk2exe action file
-//   ["actionlint"] = Builtins.actionlint
+  //   ["actionlint"] = Builtins.actionlint
   // todo: custom ahk2exe action has unsafe write to $env:GITHUB_ENV
   //   ["zizmor"] = (Builtins.zizmor) {
   //     fix = "zizmor --no-progress --fix=all {{files}}"

@@ -1,8 +1,12 @@
 # Hotkey
 
-My windows hotkeys
+windows hotkeys
 
-# Dev
+## todo
+
+- fix actionlint and zizmor issues with github actions
+
+## dev
 
 ```pwsh
 # manually bump the version file. then:
@@ -18,7 +22,7 @@ git push --tags
 ```
 
 
-## Notes
+## notes
 
 Possible github actions to use. These seem to break often
 
