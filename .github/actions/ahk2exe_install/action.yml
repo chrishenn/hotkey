@@ -16,9 +16,14 @@ runs:
       shell: bash
       # we use the month to auto invalidate cache every month, with cache_bust to manually override
       env:
-        BUST: ${{ github.event.inputs.cache_bust == 'true' && "$(echo $(date +%s) | sha256sum | cut -c1-64)" || '' }}
+        BUST_KEY: $(echo $(date +%s) | sha256sum | cut -c1-64)
+        BUST: ${{ github.event.inputs.cache_bust == 'true' && 'yes' || '' }}
         MONTH: $(/bin/date -u '+%m')
-      run: echo "cache_key=$BUST_$MONTH" >> $GITHUB_OUTPUT
+      run: |
+        bust=$(echo $(date +%s) | sha256sum | cut -c1-64)
+        bust_key="${{ github.event.inputs.cache_bust == 'true' && '$bust' || '' }}"
+        month="$(/bin/date -u '+%m')"
+        echo "cache_key=${bust_key}_${month}" >> $GITHUB_OUTPUT
 
     - name: Restore cache if available and not invalidated by timeout
       id: restore_cache
