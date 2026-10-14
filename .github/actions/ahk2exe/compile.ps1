@@ -34,8 +34,6 @@ function compile {
     echo "binary=$binary" >> $GITHUB_OUTPUT
 }
 
-
-
 function compile_old {
     $ErrorActionPreference = 'Stop'
     $ahdir = "$(scoop prefix autohotkey)"
