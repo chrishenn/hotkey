@@ -90,6 +90,7 @@ runs:
 #        echo "version=$version" >> $GITHUB_OUTPUT
 
     - name: Create cache seed file
+      shell: bash
       run: echo ${{ env.packages_to_install }} >> ${{ env.cache_hash_seed_file_path }}
 
     - name: Restore cache if available
