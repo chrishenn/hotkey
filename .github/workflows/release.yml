@@ -24,6 +24,8 @@ jobs:
           persist-credentials: false
       - name: install ahk2exe with scoop
         uses: '$/.github/actions/ahk2exe_install'
+        with:
+          cache_bust: false
       - name: Compile with Ahk2Exe
         uses: '$/.github/actions/ahk2exe'
         with:
