@@ -30,6 +30,10 @@ jobs:
         uses: '$/.github/actions/ahk2exe'
         with:
           in: AHmacro.ahk
+        env:
+          packages_to_install: autohotkey
+          cache_version: v0 # Increment cache_version if cache should be expired without changing packages_to_install
+          cache_hash_seed_file_path: './.github/workflows/scoop_cache'
       - name: Archive
         uses: thedoctor0/zip-release@b57d897cb5d60cb78b51a507f63fa184cfe35554 # 0.7.6
         with:

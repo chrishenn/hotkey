@@ -49,28 +49,78 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Check Operating System
-      shell: bash
-      run: |
-        if [[ "$RUNNER_OS" != 'Windows' ]]; then
-          echo "::error ::${RUNNER_OS} is not supported, you must use Windows."
-          exit 1
-        fi
+#    - name: Check Operating System
+#      shell: bash
+#      run: |
+#        if [[ "$RUNNER_OS" != 'Windows' ]]; then
+#          echo "::error ::${RUNNER_OS} is not supported, you must use Windows."
+#          exit 1
+#        fi
+#
+#    - name: Install Scoop with Extras
+#      shell: pwsh
+#      run: |
+#        iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+#        scoop bucket add extras
+#        scoop bucket add versions
+#        scoop install zip
+#        Write-Output ('Path=' + $env:Path + ';' + $env:UserProfile + '\scoop\shims') >> $env:GITHUB_ENV
+#
+#    - name: Install ahk2exe
+#      id: install
+#      shell: pwsh
+#      run: |
+#        scoop install autohotkey
+#        $ahk = (scoop which autohotkey)
+#        $directory = (Resolve-Path (Split-Path -Path $ahk)).Path
+#        $version = (scoop info autohotkey).Version
+#
+#        $ahdir = "$(scoop prefix autohotkey)"
+#        $ahk2exe = "$ahdir\Compiler\Ahk2Exe.exe"
+#        $base = "$ahdir\v2\autohotkey64.exe"
+#        $installer = "$ahdir\UX\install-ahk2exe.ahk"
+#
+#        start-process $base -wait -a "/script $installer /silent /base $base"
+#        if (! (test-path $ahk2exe)) {
+#          write-host -f r "ERROR: ahk2exe.exe compiler was not found at: $ahk2exe"
+#          exit 1
+#        }
+#
+#        echo "directory=$directory" >> $GITHUB_OUTPUT
+#        echo "version=$version" >> $GITHUB_OUTPUT
 
-    - name: Install Scoop with Extras
-      shell: pwsh
-      run: |
-        iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
-        scoop bucket add extras
-        scoop bucket add versions
-        scoop install zip
-        Write-Output ('Path=' + $env:Path + ';' + $env:UserProfile + '\scoop\shims') >> $env:GITHUB_ENV
+    - name: Create cache seed file
+      run: echo ${{ env.packages_to_install }} >> ${{ env.cache_hash_seed_file_path }}
 
-    - name: Install AutoHotkey
+    - name: Restore cache if available
+      id: restore_cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: '~/scoop'
+        key: cache_version_${{ env.cache_version }}-${{ hashFiles(env.cache_hash_seed_file_path) }}
+
+    - name: Install scoop
+      uses: MinoruSekine/setup-scoop@f1cc59be496ed3a1801a5f64efe5c60ba3d6bb75 # v5.0.1
+      if: steps.restore_cache.outputs.cache-hit != 'true'
+      with:
+        install_scoop: true
+        buckets: extras versions
+        apps: ${{ env.packages_to_install }}
+        scoop_update: true
+        update_path: true
+
+    - name: Put scoop on path
+      uses: MinoruSekine/setup-scoop@f1cc59be496ed3a1801a5f64efe5c60ba3d6bb75 # v5.0.1
+      if: steps.restore_cache.outputs.cache-hit == 'true'
+      with:
+        install_scoop: false
+        scoop_update: false
+        update_path: true
+
+    - name: Install ahk2exe
       id: install
       shell: pwsh
       run: |
-        scoop install autohotkey
         $ahk = (scoop which autohotkey)
         $directory = (Resolve-Path (Split-Path -Path $ahk)).Path
         $version = (scoop info autohotkey).Version
@@ -80,7 +130,7 @@ runs:
         $base = "$ahdir\v2\autohotkey64.exe"
         $installer = "$ahdir\UX\install-ahk2exe.ahk"
 
-        start-process $base -a "/script $installer /silent /base $base" -Wait
+        start-process $base -wait -a "/script $installer /silent /base $base"
         if (! (test-path $ahk2exe)) {
           write-host -f r "ERROR: ahk2exe.exe compiler was not found at: $ahk2exe"
           exit 1
@@ -88,7 +138,6 @@ runs:
 
         echo "directory=$directory" >> $GITHUB_OUTPUT
         echo "version=$version" >> $GITHUB_OUTPUT
-        echo "::notice ::Successfully installed AutoHotkey ${version} from Scoop."
 
     - name: Compile Script
       id: compile
