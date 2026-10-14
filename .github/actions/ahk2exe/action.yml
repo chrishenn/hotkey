@@ -53,6 +53,13 @@ runs:
     - name: compile ahk script
       id: compile
       shell: pwsh
+      env:
+        INPUTS_IN: ${{ inputs.in }}
+        INPUTS_OUT: ${{ inputs.out }}
+        INPUTS_ICON: ${{ inputs.icon }}
+        INPUTS_CP: ${{ inputs.cp }}
+        INPUTS_COMPRESS: ${{ inputs.compress }}
+        INPUTS_RESOURCEID: ${{ inputs.resourceid }}
       run: |
         $ErrorActionPreference = 'Stop'
         $ahdir = "$( scoop prefix autohotkey )"
