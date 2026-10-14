@@ -10,7 +10,8 @@ steps {
 
   ["pinact_update"] = Builtins.pinact_update
   ["pinact"] = Builtins.pinact
-  ["jactionlint"] = Builtins.jactionlint
+  // jactionlint can't handle gha inputs with a type yet
+  // ["jactionlint"] = Builtins.jactionlint
 
   ["check_case_conflict"] = Builtins.check_case_conflict
   ["check_merge_conflict"] = Builtins.check_merge_conflict

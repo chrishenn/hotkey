@@ -25,7 +25,7 @@ jobs:
       - name: install ahk2exe with scoop
         uses: $/.github/actions/ahk2exe_install
         with:
-          cache_bust: true
+          cache_bust: false
       - name: Compile with Ahk2Exe
         uses: $/.github/actions/ahk2exe
         with:
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-26.04
     timeout-minutes: 10
     permissions:
-      # automated release
+      # write release
       contents: write
     steps:
       - name: Download Artifacts
