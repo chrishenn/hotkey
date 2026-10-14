@@ -22,7 +22,7 @@ alias = "rel"
 run = '''
 ver="$(cat ./version)"
 git add -A
-git commit -am "Automated release of: v$ver"
+git commit -am "Automated release of: v$ver" || true
 git push
 git tag -a "v$ver" -m "Automated release of: v$ver" -f
 git push --tags -f
