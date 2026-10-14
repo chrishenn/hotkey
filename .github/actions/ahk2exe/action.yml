@@ -91,14 +91,14 @@ runs:
 
     - name: Create cache seed file
       shell: bash
-      run: echo ${{ env.packages_to_install }} >> ${{ env.cache_hash_seed_file_path }}
+      run: echo autohotkey >> './.github/workflows/scoop_cache'
 
     - name: Restore cache if available
       id: restore_cache
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: '~/scoop'
-        key: cache_version_${{ env.cache_version }}-${{ hashFiles(env.cache_hash_seed_file_path) }}
+        key: cache_version_0-${{ hashFiles('./.github/workflows/scoop_cache') }}
 
     - name: Install scoop
       uses: MinoruSekine/setup-scoop@f1cc59be496ed3a1801a5f64efe5c60ba3d6bb75 # v5.0.1
@@ -106,7 +106,7 @@ runs:
       with:
         install_scoop: true
         buckets: extras versions
-        apps: ${{ env.packages_to_install }}
+        apps: autohotkey
         scoop_update: true
         update_path: true
 
