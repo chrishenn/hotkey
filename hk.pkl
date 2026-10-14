@@ -1,6 +1,6 @@
-amends "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pkl"
+amends "package://github.com/jdx/hk/releases/download/v2.6.0/hk@2.6.0#/Config.pkl"
 
-import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.6.0/hk@2.6.0#/Builtins.pkl"
 
 steps {
   ["pkl"] = Builtins.pkl
@@ -10,13 +10,7 @@ steps {
 
   ["pinact_update"] = Builtins.pinact_update
   ["pinact"] = Builtins.pinact
-  // todo: actionlint doesn't like path reference to local ahk2exe action file
-  //   ["actionlint"] = Builtins.actionlint
-  // todo: custom ahk2exe action has unsafe write to $env:GITHUB_ENV
-  //   ["zizmor"] = (Builtins.zizmor) {
-  //     fix = "zizmor --no-progress --fix=all {{files}}"
-  //     output_summary = "hide"
-  //   }
+  ["jactionlint"] = Builtins.jactionlint
 
   ["check_case_conflict"] = Builtins.check_case_conflict
   ["check_merge_conflict"] = Builtins.check_merge_conflict

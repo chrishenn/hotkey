@@ -86,8 +86,8 @@ runs:
           exit 1
         }
 
-        echo "::set-output name=directory::$directory"
-        echo "::set-output name=version::$version"
+        echo "directory=$directory" >> $GITHUB_OUTPUT
+        echo "version=$version" >> $GITHUB_OUTPUT
         echo "::notice ::Successfully installed AutoHotkey ${version} from Scoop."
 
     - name: Compile Script
@@ -133,7 +133,7 @@ runs:
         Invoke-Expression "$ahk2exe $($args -join ' ')" | Out-String -OutVariable output
 
         $binary = $output.Split([Environment]::NewLine).Where({ $_.contains('exe') })
-        echo "::set-output name=binary::$binary"
+        echo "binary=$binary" >> $GITHUB_OUTPUT
         echo "::notice ::Successfully compiled as: ${binary}."
       env:
         INPUTS_IN: ${{ inputs.in }}

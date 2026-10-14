@@ -6,6 +6,7 @@ hk = "latest"
 pkl = "latest"
 pinact = "latest"
 zizmor = "latest"
+jactionlint = "latest"
 
 [tasks.fix]
 alias = "f"
