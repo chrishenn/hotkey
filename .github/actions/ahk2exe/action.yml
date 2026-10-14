@@ -89,58 +89,7 @@ runs:
 #        echo "directory=$directory" >> $GITHUB_OUTPUT
 #        echo "version=$version" >> $GITHUB_OUTPUT
 
-    - name: Create cache seed file
-      shell: bash
-      run: echo autohotkey >> './.github/workflows/scoop_cache'
-
-    - name: Restore cache if available
-      id: restore_cache
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: '~/scoop'
-        key: cache_version_0-${{ hashFiles('./.github/workflows/scoop_cache') }}
-
-    - name: Install scoop
-      uses: MinoruSekine/setup-scoop@f1cc59be496ed3a1801a5f64efe5c60ba3d6bb75 # v5.0.1
-      if: steps.restore_cache.outputs.cache-hit != 'true'
-      with:
-        install_scoop: true
-        buckets: extras versions
-        apps: autohotkey
-        scoop_update: true
-        update_path: true
-
-    - name: Put scoop on path
-      uses: MinoruSekine/setup-scoop@f1cc59be496ed3a1801a5f64efe5c60ba3d6bb75 # v5.0.1
-      if: steps.restore_cache.outputs.cache-hit == 'true'
-      with:
-        install_scoop: false
-        scoop_update: false
-        update_path: true
-
-    - name: Install ahk2exe
-      id: install
-      shell: pwsh
-      run: |
-        $ahk = (scoop which autohotkey)
-        $directory = (Resolve-Path (Split-Path -Path $ahk)).Path
-        $version = (scoop info autohotkey).Version
-
-        $ahdir = "$(scoop prefix autohotkey)"
-        $ahk2exe = "$ahdir\Compiler\Ahk2Exe.exe"
-        $base = "$ahdir\v2\autohotkey64.exe"
-        $installer = "$ahdir\UX\install-ahk2exe.ahk"
-
-        start-process $base -wait -a "/script $installer /silent /base $base"
-        if (! (test-path $ahk2exe)) {
-          write-host -f r "ERROR: ahk2exe.exe compiler was not found at: $ahk2exe"
-          exit 1
-        }
-
-        echo "directory=$directory" >> $GITHUB_OUTPUT
-        echo "version=$version" >> $GITHUB_OUTPUT
-
-    - name: Compile Script
+    - name: compile ahk script
       id: compile
       shell: pwsh
       run: |
@@ -152,9 +101,13 @@ runs:
 
         $args = @()
         $with = @{
-          'in' = "$env:INPUTS_IN"; 'out' = "$env:INPUTS_OUT"; 'icon' = "$env:INPUTS_ICON";
-          'cp' = "$env:INPUTS_CP"; 'base' = "$base"; 'compress' = "$env:INPUTS_COMPRESS";
-          'resourceid' = "$env:INPUTS_RESOURCEID";
+          'in' = "$env:INPUTS_IN"
+          'out' = "$env:INPUTS_OUT"
+          'icon' = "$env:INPUTS_ICON"
+          'cp' = "$env:INPUTS_CP"
+          'base' = "$base"
+          'compress' = "$env:INPUTS_COMPRESS"
+          'resourceid' = "$env:INPUTS_RESOURCEID"
         }
 
         ForEach ($key in @($with.Keys)) {
