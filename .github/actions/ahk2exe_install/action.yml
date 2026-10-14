@@ -15,9 +15,12 @@ runs:
       id: cache_key
       shell: bash
       # we use the month to auto invalidate cache every month, with cache_bust to manually override
-      run: |
-        bust_hash=$(echo $(date +%s) | sha256sum | cut -c1-64)
-        bust_key="${{ github.event.inputs.cache_bust }} == 'true' && $bust_hash || ''"
+      run: |                
+        if [ "${{ github.event.inputs.cache_bust }}" = "true" ]; then
+          bust_key=$(echo $(date +%s) | sha256sum | cut -c1-64) 
+        else
+          bust_key=''
+        fi        
         month="$(/bin/date -u '+%m')"
         echo "cache_key=${bust_key}_${month}" >> $GITHUB_OUTPUT
 
