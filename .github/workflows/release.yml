@@ -37,7 +37,7 @@ jobs:
         with:
           type: zip
           filename: hotkey.zip
-          exclusions: '*_ahktmp* *.ahk *.git* *.github* .gitignore .artifacts readme.md mise.toml justfile'
+          exclusions: '*_ahktmp* *.ahk *.git* *.github* .gitignore .artifacts readme.md mise.toml justfile hk.pkl'
       - name: Upload Artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
