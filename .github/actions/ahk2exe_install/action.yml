@@ -2,11 +2,9 @@ name: Install ahk2exe
 author: chrishenn
 description: Install ahk2exe using scoop
 
-
 runs:
   using: composite
   steps:
-
   - name: Create cache seed file
     shell: bash
     run: echo autohotkey >> './.github/workflows/scoop_cache'
@@ -16,7 +14,7 @@ runs:
     uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
     with:
       path: '~/scoop'
-      key: cache_version_0-${{ hashFiles('./.github/workflows/scoop_cache') }}
+      key: cache_version_${{ hashFiles('./.github/workflows/scoop_cache') }}
 
   - name: Install scoop
     uses: MinoruSekine/setup-scoop@f1cc59be496ed3a1801a5f64efe5c60ba3d6bb75 # v5.0.1

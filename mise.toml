@@ -7,6 +7,7 @@ pkl = "latest"
 pinact = "latest"
 zizmor = "latest"
 jactionlint = "latest"
+act = "latest"
 
 [tasks.fix]
 alias = "f"
