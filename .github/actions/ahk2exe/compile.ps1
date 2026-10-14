@@ -4,8 +4,7 @@ function compile {
     $ahk2exe = "$ahdir\Compiler\Ahk2Exe.exe"
     $base = Resolve-Path "$ahdir\v2\autohotkey64.exe"
 
-    $arg = @()
-    $arg += "/base '$base'"
+    $arg = @("/base '$base'")
     if ($env:INPUTS_IN) {
         $in = Resolve-Path $env:INPUTS_IN
         $arg += "/in '$in'"
@@ -35,13 +34,15 @@ function compile {
     echo "binary=$binary" >> $GITHUB_OUTPUT
 }
 
+
+
 function compile_old {
     $ErrorActionPreference = 'Stop'
     $ahdir = "$(scoop prefix autohotkey)"
     $base = "$ahdir\v2\autohotkey64.exe"
     $ahk2exe = "$ahdir\Compiler\Ahk2Exe.exe"
 
-    $args = @()
+    $arg = @()
     $with = @{
       'in' = "$env:INPUTS_IN"
       'out' = "$env:INPUTS_OUT"
@@ -68,15 +69,14 @@ function compile_old {
         }
 
         If ($is_path) {
-          $args += "/$key '$($with["$key"])'"
+          $arg += "/$key '$($with["$key"])'"
         } Else {
-          $args += "/$key $($with["$key"])"
+          $arg += "/$key $($with["$key"])"
         }
       }
     }
 
-    Invoke-Expression "$ahk2exe $($args -join ' ')" | Out-String -OutVariable output
-
+    Invoke-Expression "$ahk2exe $($arg -join ' ')" | Out-String -OutVariable output
     $binary = $output.Split([Environment]::NewLine).Where({ $_.contains('exe') })
     echo "binary=$binary" >> $GITHUB_OUTPUT
     echo "::notice ::Successfully compiled as: ${binary}."
